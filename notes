@@ -8,7 +8,8 @@
 有两题数学题。
 
 【0619】
-E题其实不难。
+E题其实不难。重写了好多次才ac。舒一口气。
+
 如下：
 [description]
 一辆汽车加满油后可行驶n公里。旅途中有若干个加油站。设计一个有效算法，指出应在哪些加油站停靠加油，使沿途加油次数最少。
@@ -21,4 +22,45 @@ E题其实不难。
 第k+1 个加油站表示目的地。
 [output]
 将计算出的最少加油次数输出。如果无法到达目的地，则输出“No Solution!”。 
+[题解]
+能走就走。
+判断可行的方法：看是有没有一项比油箱容量多。
+这个可以证。
+[代码]
+#include<iostream>
+using namespace std;
+
+int n,k,cnt,t;
+bool flg;
+
+void solve(){
+	int a[1000+20];
+	flg=false;
+	for(int i=0;i<=k;i++) {
+		cin>>a[i];	
+		if(a[i]>n) { flg=true;}
+	}
+	if(flg==false){
+	cnt=0;t=n;
+	for(int i=1;i<=k;i++) {
+	t-=a[i-1];
+	//cout<<"a[i]="<<a[i]<<" i="<<i<<" t="<<t;
+		if(t<a[i]){
+			cnt++;
+			t=n;
+		//	cout<<" add";
+		}
+		//cout<<endl;
+	}
+	}
+	if(flg) cout<<"No Solution!";
+	else cout<<cnt;
+	cout<<endl;
+}
+
+int main()
+{
+	while(cin>>n>>k) solve();	
+	return 0;
+} 
 
