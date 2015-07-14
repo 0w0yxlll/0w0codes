@@ -1,0 +1,47 @@
+# 0w0codes
+//来自whj神犇
+#include <cstdio>
+#include <cstring>
+#define ele int
+using namespace std;
+#define maxn 10
+struct mat{
+	ele n,m,a[maxn][maxn];
+};
+mat operator*(mat a,mat b){
+	mat c;
+	c.n=a.n; c.m=b.m;
+	for (int i=0; i<a.n; ++i)
+		for (int j=0; j<b.m; ++j){
+			c.a[i][j]=0;
+			for (int k=0; k<a.m; ++k)
+				c.a[i][j]+=a.a[i][k]*b.a[k][j];
+		}
+	return c;
+}
+mat operator^(mat a,ele x){
+	if (x==0){
+		for (int i=0; i<a.n; ++i)
+			for (int j=0; j<a.m; ++j)
+				a.a[i][j]=(i==j);
+		//变成单位矩阵 
+		return a;
+	}
+	mat k=a^(x/2);
+	k=k*k;
+	if (x&1) //x是奇数 
+		k=k*a;
+	/*当次数是偶数时，应该是a^x=a^(x/2)*a^(x/2)；当次数是奇数时，应该是a^x=a^(x/2)*a^(x/2)*a； 
+上面的/是整除*/
+	return k;
+}
+int main(){
+	mat a,b,c;
+	a=(mat){2,1,{{1},{1}}};
+	b=(mat){2,2,{{1,1},{1,0}}};
+	ele test;scanf("%d",&test);test--;
+	b=b^test; 
+	c=b*a;
+	printf("%d\n",c.a[1][0]);
+	return 0;
+}
