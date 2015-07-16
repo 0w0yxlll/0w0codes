@@ -1,0 +1,12 @@
+计算b^p mod k的值。
+# 0w0codes
+#define ele unsigned long long
+ele powermod(ele a,ele b,ele c){
+	if(b==0) return 1;
+	ele k=solve(a,b/2,c);
+	k=(k*k)%c;
+	if(b&1) k=((k%c)*(a%c))%c;
+	return k%c;
+}
+//mod得好混乱。。CODEVS 3500数据有错，AC的话要写特判
+//简单的测试数据：5 10 9 输出4
