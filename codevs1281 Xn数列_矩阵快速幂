@@ -1,0 +1,84 @@
+【题目描述】
+给你6个数，m, a, c, x0, n, g
+Xn+1 = ( aXn + c ) mod m，求Xn
+m, a, c, x0, n, g<=10^18
+
+【输入描述】
+一行六个数 m, a, c, x0, n, g
+
+【输出描述】
+输出一个数 Xn mod g
+
+【样例输入】
+11 8 7 1 5 3
+
+【样例输出】
+2
+
+【数据范围及提示】 
+int64按位相乘可以不要用高精度。
+
+【题解】
+矩阵+快速幂
+注意：
+maxn不要开大了（递归函数会爆）
+按位相乘取模的算法
+这题数据中没有负数 所以不用“c=(c%m+m)%m”
+以及long long 改成 unsigned long long
+
+【代码】
+#include<iostream>
+#define i64 unsigned long long 
+#define maxn 2
+using namespace std;
+i64 m,g;
+struct mat{
+	i64 n,m,a[maxn][maxn];
+};
+i64 mul(i64 a, i64 b)
+{
+	i64 ans = 0,tmp = a;
+	while(b)
+	{
+		ans += b%10 * tmp; ans %= m;
+		b/=10; tmp  = (tmp*10)%m; 
+	}
+	return ans;
+}
+mat operator*(mat a,mat b){
+	mat c;
+	c.n=a.n; c.m=b.m;
+	for(i64 i=0;i<c.n;i++)
+		for(i64 j=0;j<c.m;j++){
+			c.a[i][j]=0;
+			for(i64 k=0;k<a.m;k++)
+				c.a[i][j]=(c.a[i][j]+mul(a.a[i][k],b.a[k][j]))%m;
+		}
+	return c;
+}
+mat operator^(mat b,i64 x){
+	if(x==0){
+		for(i64 i=0;i<b.n;i++)
+			for(i64 j=0;j<b.m;j++)
+				b.a[i][j]=(i==j);
+		return b;
+	}
+	mat k=b^(x/2);
+	k=k*k;
+	if(x&1) k=k*b;
+	return k;
+}
+int main(){
+	i64 a,c,x0,x1,n;
+	mat x,y,z;
+	cin>>m>>a>>c>>x0>>n>>g;
+	a = a%m;
+	x0 = x0%m;
+	c = c%m;
+	x=(mat){2,1,{{x0},{c}}};
+	y=(mat){2,2,{{a,1},{0,1}}};
+	y=y^n;
+	z=y*x;
+	cout<<z.a[0][0]%g<<endl;
+	return 0;
+}
