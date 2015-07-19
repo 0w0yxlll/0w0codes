@@ -40,9 +40,9 @@ int main(){
 	mat a,b,c;
 	a=(mat){2,1,{{1},{1}}};
 	b=(mat){2,2,{{1,1},{1,0}}};
-	ele test;scanf("%d",&test);test--;
+	ele test;scanf("%d",&test);
 	b=b^test; 
 	c=b*a;
-	printf("%d\n",c.a[1][0]);
+	printf("%d\n",c.a[0][0]);
 	return 0;
 }
