@@ -1,0 +1,46 @@
+# 0w0codes
+#define maxn 10000
+#define i64 int
+i64 a[maxn],n,tree[maxn];
+
+/*
+tree[i]=sigma(a[i]-lowbit[i]+1],a[i])
+
+lobbit:
+lowbit(x) = 2 ^ k //k为二进制中x末尾0的个数
+          = x & ( x ^ ( x – 1 ) )
+          = x & -x
+
+int lowbit(int x){
+  return x&-x;
+}
+*/
+
+//读入,初始化
+void input(i64 n){
+	for(i64 i=1; i<=n; i++) {
+	  scanf("%d",&a[i]);
+		tree[i]=0;
+		for(i64 j=i-(i&-i)+1; j<=i; j++) tree[i]+=a[j];	
+	}	
+	return ;
+}
+
+//查询
+//1~k的区间和
+int read(i64 k) {  
+    int sum=0;  
+    while(k) {  
+        sum+=tree[k];  
+        k-=k&-k;  
+    }  
+    return sum;  
+}  
+
+//修改
+void add(i64 k,i64 num) {  
+    while(k<=n) {  
+        tree[k]+=num;  
+        k+=k&-k;  
+    }  
+}
