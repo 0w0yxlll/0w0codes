@@ -1,0 +1,61 @@
+# 0w0codes
+[题目]
+矩阵乘法的定义：
+1. 矩阵A乘以B的时候，必须要求A的列数=B的行数，否则无法进行乘法运算。因此矩阵乘法也不满足交换律。
+2. 设A是X*N的矩阵，B是N*Y的矩阵，用A的每一行乘以B的每一列，得到一个X*Y的矩阵。
+对于某一行乘以某一列的运算，我们称之为向量运算，即对应位置的每个数字相乘之后求和。
+C[i,j] = Sigma(A[i,k] * B[k,j])
+给2个矩阵,要求输出乘积
+
+[题解]
+water~只是无聊写写template
+1A
+这次改进了input和output的通用
+
+[代码]
+#include<iostream>
+#include<cstdio>
+using namespace std;
+#define maxn 200+10
+#define i64 long long
+
+struct mat{
+	i64 n,m,a[maxn][maxn];
+};
+
+mat input(){
+	mat x;
+	cin>>x.n>>x.m;
+	for(i64 i=0;i<x.n;i++)
+		for(i64 j=0;j<x.m;j++)
+			scanf("%d",&x.a[i][j]);
+	return x;	
+}
+
+mat operator*(mat a,mat b){
+	mat c;
+	c.n=a.n;c.m=b.m;
+	for(i64 i=0;i<c.n;i++)
+		for(i64 j=0;j<c.m;j++){
+			c.a[i][j]=0;
+			for(i64 k=0;k<a.m;k++)
+				c.a[i][j]+=a.a[i][k]*b.a[k][j];
+		}
+	return c;
+}
+
+void output(mat x){
+	for(i64 i=0;i<x.n;i++){
+		for(i64 j=0;j<x.m;j++)	
+			printf("%d ",x.a[i][j]);
+		printf("\n");
+	}
+	return ;
+}
+int main(){
+	mat a,b;
+	a=input();
+	b=input();
+	output(a*b);
+	return 0;
+}
