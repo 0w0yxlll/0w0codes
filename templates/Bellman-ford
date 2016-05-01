@@ -1,0 +1,38 @@
+#include<iostream>
+using namespace std;
+#define maxn 40
+#define inf 9999
+
+int n,m,u[maxn],v[maxn],w[maxn],dis[maxn];
+
+int main(){
+	cin>>n>>m;
+  //初始化，注意
+	for(int i=1;i<=n;i++) 
+		dis[i]=inf;
+	dis[1]=0;
+	//读入
+	for(int i=1;i<=m;i++)
+		cin>>u[i]>>v[i]>>w[i];
+  //核心部分
+	for(int k=1;k<=n-1;k++)
+		for(int i=1;i<=m;i++){
+			if(dis[v[i]]>dis[u[i]]+w[i])
+				dis[v[i]]=dis[u[i]]+w[i];
+		}
+	//输出
+	for(int i=1;i<=n;i++)
+		cout<<dis[i]<<endl;
+	return 0;
+}
+/* 
+5 5
+2 3 2
+1 2 -3
+1 5 5 
+4 5 2
+3 4 3
+
+out:
+0 -3 -1 2 4
+*/
