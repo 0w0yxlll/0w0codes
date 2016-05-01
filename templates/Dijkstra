@@ -1,0 +1,62 @@
+#include<iostream>
+using namespace std;
+#define maxn 40
+#define inf 9999
+
+int dis[maxn],e[maxn][maxn],m,n,book[maxn],cnt;
+
+int main(){
+	cin>>n>>m;
+	//邻接矩阵初始化
+	for(int i=1;i<=n;i++)
+		for(int j=1;j<=n;j++){
+			e[i][j]=inf;
+			if(i==j) e[i][j]=0;
+		}
+	//读入
+	for(int i=1;i<=m;i++){
+		int t1,t2,t3;
+		cin>>t1>>t2>>t3;
+		e[t1][t2]=t3;
+	}
+	//初始化
+	for(int i=1;i<=n;i++){
+		dis[i]=e[1][i];
+		book[i]=0;
+	}
+	//核心部分
+	book[1]=1;
+	for(int k=1;k<=n-1;k++){
+		int u,mind=inf;
+		//找最近的点
+		for(int i=1;i<=n;i++){
+			if(book[i]==0&&mind>dis[i]){
+				mind=dis[i];
+				u=i;
+			}
+		}
+		//以此点为中心扩展
+		book[u]=1;
+		for(int i=1;i<=n;i++){
+			if(book[i]==0&&dis[i]>dis[u]+e[u][i])
+				dis[i]=dis[u]+e[u][i];
+		}
+	}
+	//输出
+	for(int i=1;i<=n;i++)
+		cout<<"i= "<<i<<" "<<dis[i]<<endl;
+	return 0;
+}
+/*
+6 9
+1 2 1
+1 3 12
+2 3 9
+2 4 3
+3 5 5
+4 3 4
+4 5 13
+4 6 15
+5 6 4
+out:
+0 1 8 4 13 17*/
