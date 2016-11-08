@@ -1,0 +1,52 @@
+#0w0codes
+好久没有写题解了 随便写道水题
+
+【题目描述】
+n，k (6<n<=200，2<=k<=6)
+不考虑顺序，把n分为非0的k份，使得和为n。
+
+【题解】
+水题。
+
+【代码】
+dfs方法：
+#include<iostream>
+using namespace std;
+
+int n,k,tot;
+
+void dfs(int cur,int left,int step){
+	if(step==k&&left>=cur){
+		tot++;
+		return;
+	}
+	for(int i=cur;i<=left;i++)
+		dfs(i,left-i,step+1);
+}
+
+int main(){
+	cin>>n>>k;
+	tot=0;
+	dfs(1,n,1);
+	cout<<tot<<endl;
+	return 0;
+} 
+
+dp方法：
+#include<iostream>
+using namespace std;
+
+const int maxn = 200+20;
+int n,k,dp[maxn][maxn];
+
+int main(){
+	cin>>n>>k;
+	for(int i=1;i<=n;i++)
+		for(int j=1;j<=k;j++){
+			dp[i][j]=dp[i-j][j]+dp[i-1][j-1];
+			if(i<j||i<=0||j<=0) dp[i][j]=0;
+			if(i==j||j==1) dp[i][j]=1;			
+		}
+	cout<<dp[n][k]<<endl;
+	return 0;
+}
