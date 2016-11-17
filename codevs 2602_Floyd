@@ -1,0 +1,62 @@
+#0w0codes
+【题目】
+在一个坐标系中描出若干个点并连线（包含负数）
+求两点间最短路
+
+【题解】
+floyd
+初始化的时候注意无向
+
+【代码】
+#include<iostream>
+#include<cstdio>
+#include<cmath>
+using namespace std;
+const int maxn = 100+20;
+const long long inf = 100000000+30;
+
+struct node{
+	int x,y;	
+}a[maxn];
+
+int n,m;
+double e[maxn][maxn];
+ 
+inline double pw(int t){
+	return t*t;
+}
+ 
+inline void input(){
+	cin>>n;
+	for(int i=1;i<=n;i++)
+		scanf("%d%d",&a[i].x,&a[i].y);
+	cin>>m;
+	for(int i=1;i<=n;i++)
+		for(int j=1;j<=n;j++){
+			e[i][j]=inf;
+			if(i==j) e[i][j]=0;
+		}
+	for(int i=1;i<=m;i++){
+		int t1,t2;
+		scanf("%d%d",&t1,&t2);
+		e[t2][t1]=e[t1][t2]=sqrt(pw(a[t1].x-a[t2].x)+pw(a[t1].y-a[t2].y));
+	}
+	return ;
+}
+
+inline void floyd(){
+	for(int k=1;k<=n;k++)
+		for(int i=1;i<=n;i++)
+			for(int j=1;j<=n;j++)
+				e[i][j]=min(e[i][k]+e[k][j],e[i][j]);
+	return ;
+} 
+
+int main(){
+	input();
+	floyd();
+	int s,t;
+	cin>>s>>t;
+	printf("%.2lf\n",e[s][t]);
+	return 0;
+} 
