@@ -1,0 +1,181 @@
+# 0w0code
+
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+using namespace std;
+#define MAXN 50 //be aware of the length of strings 
+
+int TaskNum,TrainSetNum,TestSetNum,StateLen,MatLen,MatVal[MAXN][MAXN],StateNum[MAXN],Kth;
+char MatWord[MAXN][MAXN],StateWord[MAXN][MAXN];
+double dis[MAXN][MAXN];
+
+//get a new line		
+void GetNewLine(){
+	char k1[MAXN];
+	cin.getline(k1,'/');
+	return;
+} 
+
+//maintenance the wordlist
+void compute(int k,char s[MAXN]){
+	bool flg=false;
+	for(int i=0;i<MatLen;i++){
+		if(strcmp(s,MatWord[i])==0){
+			MatVal[k][i]++;
+			flg=true;
+		}
+	}
+	if(flg==false){
+		strcpy(MatWord[MatLen],s);
+		MatVal[k][MatLen]++;
+		MatLen++;
+	}
+	return;
+}
+
+void init(){
+	cin>>TrainSetNum>>TestSetNum>>Kth;
+	if(Kth>TrainSetNum) 
+		Kth=TrainSetNum;
+	memset(dis,0,sizeof(dis));
+	memset(MatVal,0,sizeof(MatVal));
+	MatLen=0;
+	StateLen=0;
+	
+	//compute train sets
+	for(int i=0;i<TrainSetNum;i++){
+		GetNewLine(); 
+		char s[MAXN];
+		int k=0;
+		cin.getline(s,'/');
+		for(int j=0;j<=strlen(s);j++){
+			if(s[j]==' '||j==strlen(s)) {
+				char t[MAXN]="";
+				strncpy(t,s+j-k,k);
+				k=0;
+				compute(i,t);		
+			}
+			else
+				k++;
+		}
+		cin>>s;
+		bool flg=false;	
+		for(int j=0;j<StateLen;j++){
+			if(strcmp(s,StateWord[j])==0){
+				StateNum[i]=j;
+				flg=true;
+			}
+		}
+		if(flg==false){
+			strcpy(StateWord[StateLen],s);
+			StateNum[i]=StateLen;
+			StateLen++;
+		}
+	}
+	
+	//compute test set
+	GetNewLine();
+	for(int i=0;i<TestSetNum;i++){
+		char s[MAXN];
+		int k=0;
+		cin.getline(s,'/');
+		for(int j=0;j<=strlen(s);j++){
+			if(s[j]==' '||j==strlen(s)) {
+				char t[MAXN]="";
+				strncpy(t,s+j-k,k);
+				k=0;
+				compute(i+TrainSetNum,t);		
+			}
+			else
+				k++;
+		}
+	}
+	return ;
+}
+
+void OutputMat(){
+	cout<<endl<<"# One-Hot Matrix and Solutions #"<<endl<<endl<<"total words: "<<MatLen<<endl<<endl  ;
+	for(int i=0;i<TrainSetNum+TestSetNum;i++){
+		if(i<TrainSetNum) 
+			cout<<"Training Set"<<i+1<<":"<<endl;
+		else
+			cout<<"Test Set"<<i-TrainSetNum+1<<":"<<endl;
+		for(int j=0;j<MatLen;j++){
+			cout<<MatWord[j]<<": "<<MatVal[i][j]<<"  ";
+		}
+		cout<<"State:"<<StateNum[i]<<" "<<StateWord[StateNum[i]];
+		cout<<endl<<endl;
+	}
+	return;
+}
+
+//calulate euclidean metric
+void GetDis(){
+	for(int i=0;i<TestSetNum;i++)
+		for(int j=0;j<TrainSetNum;j++){
+			int t=0;
+			for(int k=0;k<MatLen;k++)
+				t+=(MatVal[i+TrainSetNum][k]-MatVal[j][k])*(MatVal[i+TrainSetNum][k]-MatVal[j][k]);
+			dis[i][j]=sqrt(t);
+		}	
+	return;
+}
+
+//Calculate Kth, return the state of a test set
+int CalKth(double a[MAXN],int b[MAXN]){
+	int ans=-1,maxs=-1,n=TrainSetNum,c[MAXN];
+	memset(c,0,sizeof(c));
+	//bubble sort
+	for(int i=0;i<n;i++)
+		for(int j=0;j<i;j++){
+			if(a[j]>a[i]){
+				double t1;
+				int t2;
+				t1=a[i]; a[i]=a[j]; a[j]=t1;
+				t2=b[i]; b[i]=b[j]; b[j]=t2;				
+			}
+		} 
+	for(int i=0;i<Kth;i++)
+	 	c[b[i]]++;
+	for(int i=0;i<StateLen;i++)
+		if(c[i]>maxs){
+			maxs=c[i];
+			ans=i;
+		}	
+	return ans;	
+}
+
+void solve(){
+	GetDis();
+	for(int i=0;i<TestSetNum;i++)
+		StateNum[i+TrainSetNum]=CalKth(dis[i],StateNum);			
+	return;
+}
+
+void OutputDis(){
+	cout<<"# Euclidean Metric #"<<endl<<endl;	
+	for(int i=0;i<TestSetNum;i++)
+		for(int j=0;j<TrainSetNum;j++){
+			if(j==0) cout<<"Test Set "<<i+1<<" :"<<endl;
+			cout<<dis[i][j]<<" ";
+			if(j==TrainSetNum-1) cout<<endl<<endl;
+		}
+	return;
+}
+
+int main(){
+	freopen("KNN_In.txt","r",stdin);
+	freopen("KNN_Out.txt","w",stdout);
+	cin>>TaskNum;
+	for(int i=1;i<=TaskNum;i++){
+		cout<<"## Task "<<i<<"  ##"<<endl;
+		init();
+		solve();
+		cout<<"Number of Training Set: "<<TrainSetNum<<"\nNumber of Test Set: "<<TestSetNum<<"\nk:"<<Kth<<endl;
+		OutputMat();
+		OutputDis();	
+	}
+	return 0;
+}
