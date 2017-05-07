@@ -1,0 +1,123 @@
+# 0w0yxl code
+
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+using namespace std;
+#define MAXN 50 //be aware of the length of strings 
+
+int TaskNum,TrainSetNum,TestSetNum,StateLen,dis[MAXN],MatLen;
+char MatWord[MAXN][MAXN],StateWord[MAXN][MAXN];
+int MatVal[MAXN][MAXN],StateNum[MAXN];
+
+//get a new line		
+void GetNewLine(){
+	char k1[MAXN];
+	cin.getline(k1,'/');
+	return;
+} 
+
+void compute(int k,char s[MAXN]){
+	bool flg=false;
+	for(int i=0;i<MatLen;i++){
+		if(strcmp(s,MatWord[i])==0){
+			MatVal[k][i]++;
+			flg=true;
+		}
+	}
+	if(flg==false){
+		strcpy(MatWord[MatLen],s);
+		MatVal[k][MatLen]++;
+		MatLen++;
+	}
+	return;
+}
+
+void init(){
+	cin>>TrainSetNum>>TestSetNum;
+	memset(dis,0,sizeof(dis));
+	memset(MatVal,0,sizeof(MatVal));
+	MatLen=0;
+	StateLen=0;
+	
+	//compute train sets
+	for(int i=0;i<TrainSetNum;i++){
+		GetNewLine(); 
+		char s[MAXN];
+		int k=0;
+		cin.getline(s,'/');
+		for(int j=0;j<=strlen(s);j++){
+			if(s[j]==' '||j==strlen(s)) {
+				char t[MAXN]="";
+				strncpy(t,s+j-k,k);
+				k=0;
+				compute(i,t);		
+			}
+			else
+				k++;
+		}
+		cin>>s;
+		bool flg=false;	
+		for(int j=0;j<StateLen;j++){
+			if(strcmp(s,StateWord[j])==0){
+				StateNum[i]=j;
+				flg=true;
+			}
+		}
+		if(flg==false){
+			strcpy(StateWord[StateLen],s);
+			StateNum[i]=StateLen;
+			StateLen++;
+		}
+	}
+	
+	//compute test set
+	GetNewLine();
+	for(int i=0;i<TestSetNum;i++){
+		char s[MAXN];
+		int k=0;
+		cin.getline(s,'/');
+		for(int j=0;j<=strlen(s);j++){
+			if(s[j]==' '||j==strlen(s)) {
+				char t[MAXN]="";
+				strncpy(t,s+j-k,k);
+				k=0;
+				compute(i+TrainSetNum,t);		
+			}
+			else
+				k++;
+		}
+	}
+	return ;
+}
+
+void OutputMat(){
+	cout<<"MatLen= "<<MatLen<<endl;
+	for(int i=0;i<TrainSetNum+TestSetNum;i++){
+		if(i<TrainSetNum) 
+			cout<<"Train Set:"<<i+1<<endl,
+			cout<<"State:"<<StateNum[i]<<" "<<StateWord[StateNum[i]];
+		else
+			cout<<"Test Set:"<<i-TrainSetNum+1<<endl;
+		for(int j=0;j<MatLen;j++){
+			cout<<MatWord[j]<<": "<<MatVal[i][j]<<"  ";
+		}
+		cout<<endl<<endl;
+	}
+	return;
+}
+
+int main(){
+//	freopen("KNN_In.txt","r",stdin);
+//	freopen("KNN_Out.txt","w",stdout);
+	cin>>TaskNum;
+	for(int i=1;i<=TaskNum;i++){
+		cout<<"Task "<<i<<":"<<endl;
+		init();
+		OutputMat();		
+	}
+	return 0;
+}
+
+	
