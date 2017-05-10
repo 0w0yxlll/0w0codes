@@ -1,0 +1,72 @@
+题目描述
+
+幻方是一种很神奇的N*N矩阵：它由数字1,2,3,……,N*N构成，且每行、每列及两条对角线上的数字之和都相同。
+
+当N为奇数时，我们可以通过以下方法构建一个幻方：
+
+首先将1写在第一行的中间。
+
+之后，按如下方式从小到大依次填写每个数K(K=2,3,…,N*N)：
+
+1.若(K−1)在第一行但不在最后一列，则将K填在最后一行，(K−1)所在列的右一列；
+
+2.若(K−1)在最后一列但不在第一行，则将K填在第一列，(K−1)所在行的上一行；
+
+3.若(K−1)在第一行最后一列，则将K填在(K−1)的正下方；
+
+4.若(K−1)既不在第一行，也不在最后一列，如果(K−1)的右上方还未填数，则将K填在(K−1)的右上方，否则将K填在(K−1)的正下方。
+
+现给定N请按上述方法构造N*N的幻方。
+
+输入输出格式
+
+输入格式：
+输入文件只有一行，包含一个整数N即幻方的大小。
+
+输出格式：
+输出文件包含N行，每行N个整数，即按上述方法构造出的N*N的幻方。相邻两个整数之间用单个空格隔开。
+
+#include<cstdio>
+#include<iostream>
+using namespace std;
+
+int n,ans[60][60];
+
+int main(){
+	cin>>n;
+	for(int i=1;i<=n;i++)
+		for(int j=1;j<=n;j++)
+			ans[i][j]=-1;
+	int posx=1,posy=n/2+1;
+	for(int i=1;i<=n*n;i++){
+		ans[posx][posy]=i;
+		if(posx==1&&posy!=n){
+			posx=n;
+			posy++;
+			continue;
+		}
+		if(posx!=1&&posy==n){
+			posx--;
+			posy=1;
+			continue;
+		}
+		if(posx==1&&posy==n){
+			posx++;
+			continue;
+		}
+		if(posx!=1&&posy!=n){
+			if(ans[posx-1][posy+1]==-1){
+				posx--;
+				posy++;
+			}
+			else posx++;
+			continue;
+		}
+	}
+	for(int i=1;i<=n;i++)
+		for(int j=1;j<=n;j++){
+			if(j==n) cout<<ans[i][j]<<endl;
+			else cout<<ans[i][j]<<" ";
+		}	
+	return 0;
+} 
