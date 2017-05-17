@@ -1,0 +1,63 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+int ans,cnt,d,n,mat[130][130],sum[130][130],range[130][130];
+
+int cal(int i,int j){
+	if(i==0&&j==0) return mat[0][0];
+	if(i==0) return mat[i][j]+sum[i][j-1];
+	if(j==0) return mat[i][j]+sum[i-1][j];
+	return mat[i][j]+sum[i-1][j]+sum[i][j-1]-sum[i-1][j-1];
+}
+
+int getans(int i,int j){
+	int lfti=i-d,lftj=j-d,rghti=min(i+d,128),rghtj=min(j+d,128);
+	int t=sum[rghti][rghtj];
+	if(lfti>0) t-=sum[lfti-1][rghtj];
+	if(lftj>0) t-=sum[rghti][lftj-1];
+	if(lfti>0&&lftj>0) t+=sum[lfti-1][lftj-1];	
+	return t;
+
+}
+
+void test(int a[130][130],int t){
+	cout<<endl<<endl;
+	for(int i=0;i<=t;i++)
+		for(int j=0;j<=t;j++){
+			cout<<a[i][j]<<" ";
+			if(j==t) cout<<endl;
+		}
+	cout<<endl<<endl;
+}
+
+int main(){
+	cin>>d>>n;
+	for(int i=0;i<=128;i++)
+		for(int j=0;j<=128;j++){
+			mat[i][j]=0;
+		}
+	for(int i=1;i<=n;i++){
+		int x,y,k;
+		cin>>x>>y>>k;
+		mat[x][y]=k;
+	}
+	for(int i=0;i<=128;i++)
+		for(int j=0;j<=128;j++)
+			sum[i][j]=cal(i,j);
+	ans=-1;
+	for(int i=0;i<=128;i++)
+		for(int j=0;j<=128;j++){
+			range[i][j]=getans(i,j);
+			if(range[i][j]>ans) ans=range[i][j];
+		}				
+	cnt=0;
+	for(int i=0;i<=128;i++)
+		for(int j=0;j<=128;j++)
+			if(range[i][j]==ans) cnt++;	
+	cout<<cnt<<" "<<ans<<endl;				
+//	test(mat,15);
+//	test(sum,15);
+//	test(range,15);
+	return 0;
+}
