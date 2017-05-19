@@ -1,0 +1,57 @@
+原题：luogu P3367
+
+题目描述
+
+如题，现在有一个并查集，你需要完成合并和查询操作。
+
+输入输出格式
+
+输入格式：
+第一行包含两个整数N、M，表示共有N个元素和M个操作。
+
+接下来M行，每行包含三个整数Zi、Xi、Yi
+
+当Zi=1时，将Xi与Yi所在的集合合并
+
+当Zi=2时，输出Xi与Yi是否在同一集合内，是的话输出Y；否则话输出N
+
+输出格式：
+如上，对于每一个Zi=2的操作，都有一行输出，每行包含一个大写字母，为Y或者N
+
+
+
+#include<iostream>
+using namespace std;
+
+const int maxn=10000+20;
+int n,m,pre[maxn];
+
+void init(){
+	for(int i=1;i<=n;i++)
+		pre[i]=i;
+}
+
+int getf(int x){
+	if(pre[x]==x) return x;
+	else return pre[x]=getf(pre[x]);
+}
+
+void mge(int x,int y){
+	pre[getf(x)]=pre[getf(y)];
+}
+
+int main(){
+	cin>>n>>m;
+	init();
+	for(int i=1;i<=m;i++){
+		int t,x,y;
+		cin>>t>>x>>y;
+		if(t==1) mge(x,y);
+		else{
+			if(getf(x)==getf(y)) cout<<"Y";
+			else cout<<"N";
+			cout<<endl;
+		}
+	}
+	return 0;
+}
