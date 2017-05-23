@@ -1,0 +1,43 @@
+排序STL+并查集虚点
+
+#include<iostream>
+#include<algorithm>
+using namespace std;
+const int maxn = 20000+20;
+const int maxm = 100000+20;
+
+struct relation{
+	int a,b;
+	long c;
+	friend bool operator < (relation ta, relation tb) {
+        return ta.c > tb.c;
+	}
+};
+
+relation x[maxm];
+int n,m,pre[maxn*2];
+
+int getf(int t){
+	if(t==pre[t]) return t;
+	return pre[t]=getf(pre[t]);
+}
+
+int main(){
+	cin>>n>>m;
+	for(int i=1;i<=m;i++)
+		cin>>x[i].a>>x[i].b>>x[i].c;
+	for(int i=1;i<=n*2;i++)
+		pre[i]=i;
+	sort(x+1,x+m+1);
+	for(int i=1;i<=m;i++){
+		int tx=getf(x[i].a),ty=getf(x[i].b);
+		if(tx==ty){
+			cout<<x[i].c<<endl;
+			return 0;
+		}
+		pre[tx]=getf(x[i].b+n);
+		pre[ty]=getf(x[i].a+n);
+	}
+	cout<<0<<endl;	
+	return 0;
+}
