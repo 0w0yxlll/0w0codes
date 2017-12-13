@@ -1,0 +1,30 @@
+import os
+import os.path
+import re
+import numpy as np
+from sklearn.cluster import KMeans
+rootdir = r'C:\Users\Administrator\Desktop\Annotations the end\Annotations';  
+xmin=[]; 
+xmax=[];
+ymin=[];
+ymax=[];  
+
+for parent,dirnames,filenames in os.walk(rootdir):
+    for filename in filenames:
+        file=os.path.join(parent,filename);	
+        f=open(file,'r');
+        content=f.read();
+        xmin.extend(re.findall('<xmin>(\d+)</xmin>',content));
+        xmax.extend(re.findall('<xmax>(\d+)</xmax>',content));
+        ymin.extend(re.findall('<ymin>(\d+)</ymin>',content));
+        ymax.extend(re.findall('<ymax>(\d+)</ymax>',content));
+        f.close();
+xmin=np.array(xmin).astype(np.float64);
+xmax=np.array(xmax).astype(np.float64);
+ymin=np.array(ymin).astype(np.float64);
+ymax=np.array(ymax).astype(np.float64);
+width=xmax-xmin; 
+height=ymax-ymin;
+x=list(zip(width,height));
+kmeans = KMeans(n_clusters=9, random_state=0).fit(x) 
+print kmeans.cluster_centers_
